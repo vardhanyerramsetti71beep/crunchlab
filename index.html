@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Crunchlab · Kettle-style potato chips</title>
+  <meta name="description" content="A scroll-driven 3D chips experience: six flavors, real-time 3D bags, a chip storm and a build-your-own 3-pack." />
+  <meta name="theme-color" content="#2B0306" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    /* Critical loader styles, so it covers the page before the JS bundle runs */
+    html.is-loading, html.is-loading body { overflow: hidden; }
+    body { margin: 0; background: #15110B; }
+    .preloader {
+      position: fixed; inset: 0; z-index: 100; --hole: 0%;
+      background: repeating-radial-gradient(circle at 50% 50%, #C81E2A 0 5.5vmax, #B01523 5.5vmax 11vmax);
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.6%));
+              mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.6%));
+    }
+    .preloader canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .pl-ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #FFF3E8; font-family: Archivo, system-ui, sans-serif; text-align: center; pointer-events: none; }
+    .pl-brand { font-weight: 900; font-size: 18px; letter-spacing: .32em; }
+    .pl-count { font-weight: 900; font-size: clamp(88px, 18vw, 220px); line-height: .86; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+    .pl-count small { font-size: .32em; vertical-align: top; letter-spacing: 0; margin-left: .06em; }
+    .pl-note { font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; opacity: .75; }
+  </style>
+</head>
+<body>
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <canvas></canvas>
+    <div class="pl-ui">
+      <div class="pl-brand">CRUNCHLAB</div>
+      <div class="pl-count"><span>0</span><small>%</small></div>
+      <div class="pl-note">Heating the fryer</div>
+    </div>
+  </div>
+
+  <canvas id="webgl" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>CRUNCHLAB</a>
+    <nav class="links" aria-label="Sections">
+      <a href="#story">Story</a>
+      <a href="#wall">Flavors</a>
+      <a href="#box">3-Pack</a>
+    </nav>
+    <a class="basket" href="#box" aria-label="Your 3-pack">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 7h12l-1.2 12.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 7V6a3 3 0 0 1 6 0v1" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <span class="basket-label">3-Pack</span>
+      <span class="basket-count">0</span>
+    </a>
+  </header>
+
+  <main>
+    <section id="top" class="hero" aria-label="Flavors">
+      <div class="rings rings-a" aria-hidden="true"></div>
+      <div class="rings rings-b" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-title-wrap"><h1 class="hero-title"></h1></div>
+      <div class="hero-ui">
+        <div class="hero-left">
+          <p class="kicker">Kettle-style potato chips</p>
+          <p class="hero-tag"></p>
+          <button class="btn add-btn" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+            Add to 3-pack
+          </button>
+        </div>
+        <div class="hero-right">
+          <div class="hero-count"><span class="cur">02</span><span class="tot">/ 06</span></div>
+          <div class="hero-dots" role="group" aria-label="Choose a flavor"></div>
+          <div class="hero-arrows">
+            <button class="arrow prev" type="button" aria-label="Previous flavor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="arrow next" type="button" aria-label="Next flavor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="story" class="story" aria-label="How it's made">
+      <div class="story-back" aria-hidden="true"><div class="story-word">Thin</div></div>
+      <div class="story-front">
+        <article class="chapter" data-side="left">
+          <span class="ch-num">01 / Slice</span>
+          <h3>Sliced to 1.4&nbsp;mm</h3>
+          <p>Every potato is cut thinner than a coin, so it snaps instead of bending.</p>
+        </article>
+        <article class="chapter" data-side="right">
+          <span class="ch-num">02 / Fry</span>
+          <h3>Fried in small batches</h3>
+          <p>Short, hot batches turn each slice golden and glassy-crisp.</p>
+        </article>
+        <article class="chapter" data-side="left">
+          <span class="ch-num">03 / Season</span>
+          <h3>Seasoned twice</h3>
+          <p>One dusting while warm, another right before packing. Flavor on every chip.</p>
+        </article>
+        <article class="chapter" data-side="bottom">
+          <span class="ch-num">04 / Seal</span>
+          <h3>Puffed with nitrogen</h3>
+          <p>The air cushion protects the chips and keeps the crunch locked in.</p>
+        </article>
+        <div class="hotspot" aria-hidden="true"><i></i><span class="hs-label"></span></div>
+        <div class="chapter-bar" aria-hidden="true">
+          <div class="cb-seg"><span>01 Slice</span><b></b></div>
+          <div class="cb-seg"><span>02 Fry</span><b></b></div>
+          <div class="cb-seg"><span>03 Season</span><b></b></div>
+          <div class="cb-seg"><span>04 Seal</span><b></b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="storm" class="storm" aria-label="Chip storm">
+      <div class="storm-stage">
+        <h2 class="storm-title"><span>It's</span><span>Crunch</span><span>O'clock</span></h2>
+      </div>
+    </section>
+
+    <section id="wall" class="wall">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div>
+            <p class="eyebrow">Six flavors, one crunch</p>
+            <h2>Grab a bag</h2>
+          </div>
+          <p class="lede">Every bag on this wall is rendered live from the same 3D model you saw in the hero.</p>
+        </div>
+        <div class="wall-grid"></div>
+      </div>
+    </section>
+
+    <section id="box" class="box">
+      <div class="wrap box-inner">
+        <div class="box-left">
+          <div class="reveal">
+            <p class="eyebrow">Pick any three</p>
+            <h2>Build your<br />3-pack</h2>
+            <p class="lede">Tap a flavor to drop it in the tray. Tap a bag in the tray to swap it out.</p>
+          </div>
+          <div class="picker"></div>
+        </div>
+        <div class="box-right reveal">
+          <div class="tray-wrap">
+            <div class="tray-head"><span>Your 3-pack</span><span class="tray-count">0 / 3</span></div>
+            <div class="tray">
+              <button class="slot" type="button"></button>
+              <button class="slot" type="button"></button>
+              <button class="slot" type="button"></button>
+            </div>
+            <div class="tray-meta">
+              <div class="tray-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span class="price">$9.99 <s>$12.00</s></span>
+            </div>
+            <button class="btn checkout" type="button" disabled>Check out</button>
+            <p class="tray-note">Demo store. Nothing is charged.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dibs" class="dibs">
+      <div class="wrap dibs-inner reveal">
+        <p class="eyebrow">New drops every season</p>
+        <h2>First dibs<br />on new flavors</h2>
+        <form class="dibs-form" novalidate>
+          <label class="sr-only" for="email">Email address</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+          <button class="btn" type="submit">Notify me</button>
+        </form>
+        <p class="dibs-note">Demo form. Nothing is sent anywhere.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span class="logo"><i aria-hidden="true"></i>CRUNCHLAB</span>
+      <p>Crunchlab is a fictional brand made for a portfolio demo. Built with Three.js, GSAP and Lenis.</p>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
