@@ -294,8 +294,13 @@ html.lenis, html.lenis body { height: auto; }
   display: grid; place-items: center;
   background: radial-gradient(ellipse at 50% 50%, transparent 40%, color-mix(in srgb, var(--deep) 45%, transparent) 100%);
 }
+.storm-chips {
+  position: absolute; width: min(78vw, 980px); max-height: 74svh; object-fit: contain;
+  opacity: 0.8; pointer-events: none; user-select: none;
+  filter: drop-shadow(0 24px 28px color-mix(in srgb, var(--deep) 40%, transparent));
+}
 .storm-title {
-  margin: 0; text-align: center;
+  position: relative; z-index: 1; margin: 0; text-align: center;
   font: 900 clamp(64px, 15vw, 260px)/0.82 var(--font-display);
   letter-spacing: -0.045em; text-transform: uppercase;
 }
@@ -514,6 +519,7 @@ html.lenis, html.lenis body { height: auto; }
   .cb-seg span { font-size: 9px; letter-spacing: 0.06em; }
 
   .storm-title span:nth-child(2) { -webkit-text-stroke-width: 2px; }
+  .storm-chips { width: min(116vw, 700px); opacity: 0.65; }
   .wall, .box, .dibs { padding: 90px 0; }
   .wall-grid { gap: 12px; }
   .card { min-height: 340px; border-radius: 20px; }
